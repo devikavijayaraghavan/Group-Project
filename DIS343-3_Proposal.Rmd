@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1. Collaboration Plan
 * Communication: We have a group chat where we can communicate
-* Simultaneous Collaboration: We
+* Simultaneous Collaboration: 
 * Check-ins:
 
 ## 2. Data Source
