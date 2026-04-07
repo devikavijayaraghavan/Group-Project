@@ -1,0 +1,36 @@
+---
+title: "DIS343 Group 3 Project Proposal"
+author: "Devika, Quenby, Roshan"
+output: html_document
+date: "2026-04-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Collaboration Plan
+* Communication: We have a group chat where we can communicate
+* Simultaneous Collaboration: We
+* Check-ins:
+
+## 2. Data Source
+* Raw Data Link: [WHO - Maternal Mortality Ratio per 100,000 live births](https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio-(per-100-000-live-births))
+
+## 3. Research Question
+* What are the effects of maternal healthcare and coverage on maternal mortality in different countries?
+
+## 4. Data Description
+
+### 4.1 Data Collection
+
+
+### 4.2 Key Variables
+
+### 4.3 Data Structure and Sample Size
+
+## 5. Graph Description
+
+## 6. Inference Method
+
+
