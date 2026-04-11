@@ -10,9 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## 1. Collaboration Plan
-* Communication: We have a group chat where we can communicate
-* Simultaneous Collaboration: 
-* Check-ins:
+* Communication: We have a group chat where we can communicate and and RMD file to work together simultaneously.
+* Simultaneous Collaboration: We will have meetings over Zoom or in person as needed.
+* Check-ins: Weekly check-ins are scheduled, with additional meetings planned as required throughout the project.
 
 ## 2. Data Source
 * Raw Data Link: [WHO - Maternal Mortality Ratio per 100,000 live births](https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio-(per-100-000-live-births))
@@ -23,11 +23,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 4. Data Description
 
 ### 4.1 Data Collection
-...
+-Maternal Mortality Ratio: Sourced from the WHO Global Health Observatory and adjusted for underreporting using GDP per capita, the general fertility rate, and the proportion of skilled birth attendants. We use 2021 values (or the most recent available checkpoint).
+-Antenatal Care Coverage: The percentage of women aged 15–49 who received antenatal care four or more times during pregnancy, drawn from population-based surveys (DHS, MICS, and similar).
+-Proportion of Women Having Maternal Needs Satisfied: The share of women of reproductive age whose demand for family planning is met by modern contraceptive methods, also drawn from population-based surveys (DHS, MICS, and similar).
 
 ### 4.2 Key Variables
-
+- MatMort: Maternal Mortality Ratio (deaths per 100,000 live births) for the year 2021 or the most recent checkpoint. This reflects the risk of maternal death in a single pregnancy, not cumulative lifetime risk. |
+- ANCoverage:  Women who received antenatal care four or more times during pregnancy (%). A measure of access to and utilization of prenatal healthcare. |
+- NeedsMet: Proportion of women of reproductive age whose demand for family planning is satisfied by modern contraceptive methods (%). A measure of access to reproductive education and contraception. |
 ### 4.3 Data Structure and Sample Size
+- Single Row Representation: One row represents the value of a given indicator (maternal mortality rate, antenatal care coverage, or maternal needs met percentage) for one country in one year.
+- Population Representation: The broader population of interest is pregnant women and women of reproductive age worldwide. Our eight countries serve as a geographically and economically diverse sample of that global population.
+- Sample Size: Eight country-level observations per indicator, using the 2021 data point (or the nearest available year). While small, each country-level figure is an aggregate of thousands to millions of births and survey responses, providing a stable basis for regression analysis.
 
 ## 5. Graph Description
 
