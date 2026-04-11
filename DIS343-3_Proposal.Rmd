@@ -38,6 +38,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 5. Graph Description
 
+We could make a scatter plot of points from different countries to see the correlation between women who have recieved antenatal care during pregnancy and maternal mortality rates. 
+
+X-axis: Amount of women who regularly got antenatal care during pregnancy
+
+Y-axis: Maternal moirtatlity rate per 100,000 live births
+
+Points: Represents data from different countries
+
 ## 6. Inference Method
 
 
