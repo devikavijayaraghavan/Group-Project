@@ -37,19 +37,37 @@ knitr::opts_chunk$set(echo = TRUE)
 - Sample Size: Eight country-level observations per indicator, using the 2021 data point (or the nearest available year). While small, each country-level figure is an aggregate of thousands to millions of births and survey responses, providing a stable basis for regression analysis.
 
 ## 5. Graph Description
+We will create two scatterplots to visualize the correlation between maternal healthcare access and maternal mortality rates across our eight countries.
+Plot 1: Maternal Mortality Rate vs. Antenatal Care Coverage
 
-We could make a scatter plot of points from different countries to see the correlation between women who have recieved antenatal care during pregnancy and maternal mortality rates. 
+X-axis: Percentage of women who received antenatal care four or more times during pregnancy
+Y-axis: Maternal mortality rate per 100,000 live births
+Points: Each point represents one country, color-coded for clarity
+We expect a negative trend: higher antenatal coverage associated with lower mortality
 
-* X-axis: Amount of women who regularly got antenatal care during pregnancy
+Plot 2: Maternal Mortality Rate vs. Proportion of Women Having Maternal Needs Satisfied
 
-* Y-axis: Maternal moirtatlity rate per 100,000 live births
+X-axis: Percentage of women whose family planning needs are met by modern methods
+Y-axis: Maternal mortality rate per 100,000 live births
+Points: Each point represents one country, color-coded for clarity
+We again expect a negative trend
 
-* Points: Represents data from different countries
+Both plots will include a linear regression line to summarize the overall relationship.
 
-## 6. Inference Method
+6. Inference Method
+We will use simple linear regression to test the relationship between each predictor and maternal mortality rate.
 
-We will use hypothesis testing to compare the maternal mortality rate and access to antenatal care in different countries.
+Predictor variable: Antenatal Care Coverage (%) or Proportion of Women Having Maternal Needs Satisfied (%) — continuous
+Response variable: Maternal Mortality Rate per 100,000 live births — continuous
 
+Hypotheses (for each model):
 
+H₀: There is no linear relationship between the predictor and maternal mortality rate (slope β₁ = 0)
+Hₐ: There is a significant negative linear relationship (slope β₁ < 0); greater healthcare access is associated with lower maternal mortality
+
+Interpretation:
+
+Reject H₀ (p < 0.05): A significant linear association exists between the predictor and maternal mortality rate
+Fail to Reject H₀ (p ≥ 0.05): Insufficient evidence of a significant linear relationship at the 5% significance level
 
 
