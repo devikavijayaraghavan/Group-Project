@@ -1,0 +1,28 @@
+---
+title: "Stats report"
+output: html_document
+date: "2026-04-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The availability of prenatal technology and care is crucial for the comfort and safety of expectant mothers. However, the gap in access and funding across different countries is continually widening. Before the deficit in some countries can be remedied, the actual needs and effects must be identified and studied. This inadequacy leads to the question, “How does lack of antenatal care impact maternal mortality and complication rates?” Many women around the world experience life threatening complications during pregnancy, and while giving  birth, and after birth. These complications and causes of death include deaths from induced abortions without proper medical care, ectopic pregnancy, postpartum depression, hemorrhage, hypertension, sepsis, unsafe birthing conditions, obstructed labor, or other indirect causes (such as HIV/AIDS). The data represented may also be limited by the fact that much of this data’s collection happens at hospitals and other medical facilities. Therefore, pregnancy outcomes that do not occur at medical facilities and are not otherwise reported will not be included in general data. This limitation could artificially deflate certain countries' reported Maternal Mortality Rates. The complications associated with pregnancy and giving birth are often preventable. These preventative measures require funding and education for medical professionals and mothers which leads us to believe that people in countries with less access to prenatal care have higher mortality and complication rates. Maternal Mortality is a public health issue that we believe increased access to antenatal care/resources would help to solve. 
+
+We represented are choosing to represent our data with a linear regression graph. Our statistical tests allow us to observe the relationship between Maternal Mortality Rate and Antenatal Care Coverage over time in different countries. Looking at the slope of the regression from this test will allow us to test multiple factors in relation to Maternal Mortality Rate and will allow us to determine if this factor is impactful in predicting maternal mortality rate. Our linear regression model demonstrates a correlation between more Antenatal Care Coverage and lower maternal mortality rates.
+
+```{r}
+ggplot(data=AnteMatMortTBL, aes(x=antecov, y=MatMort))+
+  geom_point(mapping=aes(color=Country,size=1))+
+  geom_smooth(method="lm", se=F)+
+  labs(title = "Comparing the Percent of Women who recieved Antenatal Care Coverage to the Same Country's Maternal Mortality Rate", x="Women who Received Antenatal Care Four or More Times During Their Pregnancy(%)", y="Maternal Mortality Rate (Per 100,000 Live Births)")
+```
+
+```{r}
+anteandmort<-data.frame(antecov,MatMort)
+model2<-lm(data=anteandmort)
+summary(model2)$coefficients
+```
+
+Previous global health research has already documented that a higher proportion of needs met and increased antenatal care is associated with a lower maternal mortality rate. The presence of a corrolation suggests that as antenatal care increases, maternal mortality decreases.
