@@ -53,4 +53,9 @@ model2<-lm(data=anteandmort)
 summary(model2)$coefficients
 ```
 
+### Hypotheses
+We believe that better access to antenatal care decreases the maternal mortality rate by country.
+
+### Conclusion
+
 Previous global health research has already documented that a higher proportion of needs met and increased antenatal care is associated with a lower maternal mortality rate. The presence of a corrolation suggests that as antenatal care increases, maternal mortality decreases.
