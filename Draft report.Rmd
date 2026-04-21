@@ -10,6 +10,22 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
+
+maternal_mort = read.csv("maternalmortraw.csv")
+
+mort_chart = maternal_mort %>% select(Location, Value, Period) %>% rename(Country = Location, Year = Period) %>% arrange(Country) %>% filter(Country %in% c("Nigeria", "India", "Poland", "Indonesia", "Russian Federation", "South Africa", "Venezuela (Bolivarian Republic of)", "United States of America"))
+
+MaternalMortalityClean<-mort_chart %>% filter(row_number()%%2==!0)
+
+antenatalcare=read.csv("antenatalraw.csv")
+
+AntenatalCareClean=antenatalcare %>% select(Location, Period, Value) %>% rename(Country = Location, Year = Period, propotionOfNeedsMet=Value) %>% arrange(Country) %>% filter(Country %in% c("Nigeria", "India", "Poland", "Indonesia", "Russian Federation", "South Africa", "Venezuela (Bolivarian Republic of)", "United States of America"))
+
+MatMort<-c(155,226,1046,2.5,21,191,31,251) #got country average value by hand
+antecov<-c(58.5,88.8,52.4,79.2,88,75.5,95.2,85.2)
+Country<-c("India","Indonesia","Nigeria","Poland","Russia","South Africa", "USA", "Venezuela")
+AnteMatMortTBL<-tibble(Country, antecov, MatMort)
+
 ```
 
 ## Group Members
@@ -54,6 +70,7 @@ summary(model2)$coefficients
 ```
 
 ### Hypotheses
+
 We believe that better access to antenatal care decreases the maternal mortality rate by country.
 
 ### Conclusion
