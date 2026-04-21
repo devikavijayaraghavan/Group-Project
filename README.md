@@ -1,1 +1,3 @@
-## add significance calculations and redo conclusion with it
+- add significance calculations and redo conclusion with it
+- add limitations
+- add future studies section
