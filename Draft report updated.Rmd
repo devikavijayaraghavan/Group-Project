@@ -25,7 +25,7 @@ MatMort<-c(155,226,1046,2.5,21,191,31,251) #got country average value by hand
 antecov<-c(58.5,88.8,52.4,79.2,88,75.5,95.2,85.2)
 Country<-c("India","Indonesia","Nigeria","Poland","Russia","South Africa", "USA", "Venezuela")
 AnteMatMortTBL<-tibble(Country, antecov, MatMort)
-AnteMatMortTBL
+# AnteMatMortTBL
 ```
 
 ## Group Members
@@ -92,7 +92,9 @@ We assume that:
 
 $X = \text{Percentage of women who received antenatal care 4 or more times during their pregnancy}$
 $Y = \text{Maternal mortality rate per 100,000 live births}$
+
 **Independance**: We assume that each country's data is independent of each other.
+
 **Linearity:** The relationship between ANC coverage and MMR is approximately linear.
 
 
@@ -100,6 +102,7 @@ $Y = \text{Maternal mortality rate per 100,000 live births}$
 The hypotheses for our analysis are:
 
 **Null Hypothesis (\(H_0\))**: There is no linear relationship between the percentage of women who recieved antenatal care 4 or more times during their pregnancy and the maternal mortality rate
+
 **Alternative Hypothesis (\(H_{alpha}\))**: There is a negative linear relationship between the percentage of women recieving antenatal care 4 or more times and the maternal mortality rate
 
 $$H_0: \beta_1 = 0$$
@@ -125,12 +128,14 @@ test_statistic <- coefficients["antecov", "t value"]
 p_value <- coefficients["antecov", "Pr(>|t|)"]
 df <- model2$df.residual
 
-p_value
+#p_value
 ```
 
 **Test Statistic (t): `r test_statistic`**
+
 **Degrees of Freedom (df): `r df`**
-**P-Value: `r round(p_value)`**
+
+**P-Value: `r format(p_value, digits = 4)`**
 
 ### Interpretation
 We fail to reject the null hypothesis: the p-value is above 0.05 this implies that there is not a significant negative linear relationship for antenatal coverage and maternal mortality rate.
