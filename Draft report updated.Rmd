@@ -120,8 +120,10 @@ df <- model2$df.residual
 **P-Value: `r df`**
 
 ### Interpretation
+We fail to reject the null hypothesis: the p-value is above 0.5 this implies significance for antenatal coverage and maternal mortality rate
 
 ### Confidence Interval
+The 95% confidence interval for the difference between antenatal care coverage and the maternal mortality rate is `r round(confint(model2))`. Since the confidence interval does include 0, we cannot be sure that there is indeed a negative linear relationship, but there is certainly a week correlation.
 
 ## Discussion
 
