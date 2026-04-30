@@ -96,6 +96,9 @@ The hypotheses for our analysis are:
 
 $$H_0: \beta_1 = 0$$
 $$H_\alpha: \beta_1 < 0$$
+The null hypothesis states that knowing a country's ANC coverage provides no predictive information about its maternal mortality rate. The alternative hypothesis reflects our expectation, grounded in public health literature, that increased prenatal care is protective against maternal death.
+
+We use a significance level of **α = 0.05**.
 
 ### Test Statistic and Null Distribution
 The formula for the test statistic is:
