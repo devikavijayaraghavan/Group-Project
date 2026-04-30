@@ -70,7 +70,7 @@ summary(model2)$coefficients
 
 
 ## Statistical Analysis
-Our linear regression model demonstrates a correlation between more antenatal care coverage and lower maternal mortality rates. The multiple regression analysis yielded a p-value of .0563. This is marginally higher than the threshold of acceptable p-values, showing a weak, but likely present, correlation between the values. The slope of -.03 also suggests that the more ACC, the lower the MMRs will be.
+Our linear regression model demonstrates a correlation between more antenatal care coverage and lower maternal mortality rates. The multiple regression analysis yielded a p-value of .0563. This is marginally higher than the threshold of acceptable p-values, showing a weak, but likely present, correlation between the values. The slope of `r round(coef(model2)["antecov"], 3)` also suggests that the more ACC, the lower the MMRs will be.
 
 ### Parameter of Interest
 The parameters of interest are the true mean maternal mortality rate, and its rate of change.
@@ -129,14 +129,14 @@ p_value
 ```
 
 **Test Statistic (t): `r test_statistic`**
-**Degrees of Freedom (df): `r p_value`**
-**P-Value: `r df`**
+**Degrees of Freedom (df): `r df`**
+**P-Value: `r round(p_value)`**
 
 ### Interpretation
 We fail to reject the null hypothesis: the p-value is above 0.05 this implies that there is not a significant negative linear relationship for antenatal coverage and maternal mortality rate.
 
 ### Confidence Interval
-The 95% confidence interval for the difference between antenatal care coverage and the maternal mortality rate is `r round(confint(model2))`. Since the confidence interval does include 0, we cannot be sure that there is indeed a negative linear relationship, but there is certainly a week correlation.
+The 95% confidence interval for the difference between antenatal care coverage and the maternal mortality rate is `r round(confint(model2)["antecov",], 3)`. Since the confidence interval does include 0, we cannot be sure that there is indeed a negative linear relationship, but there is certainly a weak correlation.
 
 ## Discussion
 
