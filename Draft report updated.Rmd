@@ -73,10 +73,10 @@ summary(model2)$coefficients
 Our linear regression model demonstrates a correlation between more antenatal care coverage and lower maternal mortality rates. The multiple regression analysis yielded a p-value of .0563. This is marginally higher than the threshold of acceptable p-values, showing a weak, but likely present, correlation between the values. The slope of -.03 also suggests that the more ACC, the lower the MMRs will be.
 
 ### Parameter of Interest
-The parameters of interest 
+The parameters of interest are the true mean maternal mortality rate, and its rate of change.
 
-* 
-* 
+* The true mean maternal mortality rate for when the percentage of antenatal care access is 0%
+* The change in mortality for every 1% increase in antenatal care access and coverage.
 
 ## Discussion
 
