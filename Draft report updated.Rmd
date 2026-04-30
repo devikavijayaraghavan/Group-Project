@@ -75,8 +75,8 @@ Our linear regression model demonstrates a correlation between more antenatal ca
 ### Parameter of Interest
 The parameters of interest are the true mean maternal mortality rate, and its rate of change.
 
-* The true mean maternal mortality rate for when the percentage of antenatal care access is 0%
-* The change in mortality for every 1% increase in antenatal care access and coverage.
+* $\beta_0$: The true mean maternal mortality rate for when the percentage of antenatal care access is 0%
+* $\beta_1$: The change in mortality for every 1% increase in antenatal care access and coverage.
 
 ### Type of Inference
 We will be doing a regression inference on the slope for our data.
@@ -88,8 +88,14 @@ We assume that:
 \[Y = \text{Maternal mortality rate per 100,000 live births}
 **Independance**: We assume that each country's data is independent of each other.
 
+### Hypotheses
+The hypotheses for our analysis are:
 
-### Hypootheses
+**Null Hypothesis (\(H_0\))**: There is no linear relationship between the percentage of women who recieved antenatal care 4 or more times during their pregnancy and the maternal mortality rate
+**Alternative Hypothesis (\(H_{alpha}\))**: There is a negative linear relationship between the percentage of women recieving antenatal care 4 or more times and the maternal mortality rate
+
+\[ H_0: \beta_x = \beta_y \implies \beta_x-\beta_y = 0 \\ H_{alpha}: \beta_x > \beta_y \implies \beta_x-\beta_y > 0 \]
+
 
 ### Test Statistic and Null Distribution
 
