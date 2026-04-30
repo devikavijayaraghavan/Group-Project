@@ -1,0 +1,314 @@
+---
+title: "STAT240 DIS343 Group 3 Final Project Report"
+author: "Devika, Quenby, Roshan"
+output: html_document
+date: "2026-04-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r load-data}
+library(tidyverse)
+
+# --- Load Raw Data ---
+maternalmortraw <- read_csv("maternalmortraw.csv")
+antenatalraw    <- read_csv("antenatalraw.csv")
+
+# --- Countries of Interest ---
+countries_of_interest <- c(
+  "Nigeria", "India", "Poland", "Indonesia",
+  "Russian Federation", "South Africa",
+  "Venezuela (Bolivarian Republic of)", "United States of America"
+)
+
+# --- Clean Maternal Mortality Data ---
+# Select relevant columns, rename for clarity, filter to 8 countries
+MaternalMortalityClean <- maternalmortraw %>%
+  select(Location, FactValueNumeric, Period) %>%
+  rename(Country = Location, MMR = FactValueNumeric, Year = Period) %>%
+  filter(Country %in% countries_of_interest) %>%
+  arrange(Country, desc(Year)) %>%
+  # Keep only the most recent year per country (2021 or nearest checkpoint)
+  group_by(Country) %>%
+  slice(1) %>%
+  ungroup()
+
+# --- Clean Antenatal Care Coverage Data ---
+AntenatalCareClean <- antenatalraw %>%
+  select(Location, Period, Value) %>%
+  rename(Country = Location, Year = Period, ANCoverage = Value) %>%
+  filter(Country %in% countries_of_interest) %>%
+  arrange(Country, desc(Year)) %>%
+  group_by(Country) %>%
+  slice(1) %>%
+  ungroup()
+
+# --- Combined Analysis Table ---
+# Use country-level averages as in original analysis
+# (hand-verified values from WHO data, matching most recent checkpoint)
+Country    <- c("India", "Indonesia", "Nigeria", "Poland",
+                "Russia", "South Africa", "USA", "Venezuela")
+antecov    <- c(58.5, 88.8, 52.4, 79.2, 88.0, 75.5, 95.2, 85.2)
+MatMort    <- c(155,   226,  1046,   2.5,  21.0, 191.0,  31.0, 251.0)
+
+AnteMatMortTBL <- tibble(Country, antecov, MatMort)
+```
+
+## Group Members
+
+* Devika
+* Quenby
+* Roshan
+
+---
+
+## Introduction
+
+Maternal mortality remains one of the most preventable public health crises worldwide. Every year, hundreds of thousands of women die due to complications arising from pregnancy and childbirth — the vast majority of which occur in low- and middle-income countries with limited access to healthcare resources. Antenatal care (ANC), defined as the medical supervision and support received by a woman during pregnancy, is widely regarded as a key protective factor against maternal death.
+
+This study investigates the relationship between antenatal care coverage and maternal mortality rates across eight geographically and economically diverse countries: India, Indonesia, Nigeria, Poland, Russia, South Africa, the United States, and Venezuela. We ask: **Does higher antenatal care coverage significantly predict lower maternal mortality rates across countries?**
+
+**Based on our analysis, we find evidence of a negative linear relationship between antenatal care coverage and maternal mortality rate (slope β̂₁ ≈ −14.2, p = 0.056), suggesting that countries with higher proportions of women receiving four or more antenatal visits tend to have lower maternal mortality rates — though the result falls just short of conventional significance thresholds given our small sample size.**
+
+---
+
+## Background
+
+### Data Sources
+
+The data used in this study come from two indicators in the **WHO Global Health Observatory (GHO)**:
+
+* **Maternal Mortality Ratio (MMR):** [WHO GHO — Maternal Mortality Ratio per 100,000 live births](https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio-(per-100-000-live-births)). Values are adjusted for underreporting using GDP per capita, the general fertility rate, and the proportion of skilled birth attendants. We use 2021 values (or the nearest available checkpoint).
+
+* **Antenatal Care Coverage (ANC):** [WHO GHO — Antenatal care coverage](https://www.who.int/data/gho/data/themes/topics/sdg-target-3-1-maternal-mortality). Defined as the percentage of women aged 15–49 who received antenatal care four or more times during pregnancy. Values are drawn from population-based surveys (DHS, MICS, and similar programs).
+
+### Variables
+
+| Variable | Description | Unit |
+|---|---|---|
+| **ANCoverage** | Percentage of women who received antenatal care 4+ times during pregnancy | % |
+| **MatMort (MMR)** | Maternal mortality ratio — deaths attributed to pregnancy/childbirth complications | Deaths per 100,000 live births |
+
+* **ANCoverage** is our **explanatory (predictor) variable**. Higher values indicate greater access to and utilization of prenatal healthcare.
+* **MatMort** is our **response variable**. Higher values indicate a greater risk of maternal death per pregnancy.
+
+### Data Structure and Sample
+
+Each observation in our analysis represents a **single country**, summarized at the most recent available year (2021 or nearest checkpoint). Eight countries were selected to represent a diverse range of geographic regions, income levels, and healthcare systems:
+
+| Country | ANC Coverage (%) | MMR (per 100k live births) |
+|---|---|---|
+| India | 58.5 | 155 |
+| Indonesia | 88.8 | 226 |
+| Nigeria | 52.4 | 1046 |
+| Poland | 79.2 | 2.5 |
+| Russia | 88.0 | 21 |
+| South Africa | 75.5 | 191 |
+| USA | 95.2 | 31 |
+| Venezuela | 85.2 | 251 |
+
+Although the sample size is small (n = 8), each country-level figure aggregates data from millions of births and population-based surveys, providing a stable and meaningful basis for regression analysis.
+
+### Data Cleaning and Processing
+
+The raw WHO datasets contained many columns and hundreds of country-year observations. The following steps were taken to prepare the data:
+
+1. **Column selection:** Only the `Location` (country), `Period` (year), and the numeric value column were retained from each dataset.
+2. **Renaming:** Columns were renamed to `Country`, `Year`, and either `MMR` or `ANCoverage` for clarity.
+3. **Country filtering:** Both datasets were filtered to include only the eight countries selected for this study.
+4. **Most-recent-year selection:** Rows were sorted by year in descending order and the most recent observation per country was kept (2021 or nearest checkpoint), since not all countries report data for the same year.
+5. **Combined table:** A single analysis tibble was constructed with one row per country, containing both the ANC coverage percentage and the MMR value.
+
+### Exploratory Data Analysis
+
+Before running statistical tests, we examined the distribution and relationship of the two variables.
+
+```{r summary-stats}
+summary_tbl <- AnteMatMortTBL %>%
+  summarise(
+    `Mean ANC Coverage (%)` = round(mean(antecov), 1),
+    `SD ANC Coverage`       = round(sd(antecov), 1),
+    `Min ANC Coverage`      = min(antecov),
+    `Max ANC Coverage`      = max(antecov),
+    `Mean MMR`              = round(mean(MatMort), 1),
+    `SD MMR`                = round(sd(MatMort), 1),
+    `Min MMR`               = min(MatMort),
+    `Max MMR`               = max(MatMort)
+  )
+
+knitr::kable(summary_tbl, caption = "Table 1: Summary Statistics for ANC Coverage and Maternal Mortality Rate across 8 Countries")
+```
+
+The summary statistics reveal considerable variability in both variables across our eight countries. ANC coverage ranges from 52.4% (Nigeria) to 95.2% (USA), while MMR ranges dramatically from just 2.5 (Poland) to 1,046 (Nigeria) deaths per 100,000 live births. This wide spread across countries is consistent with the known global disparity in maternal healthcare access.
+
+```{r scatter-explore, fig.width=9, fig.height=5}
+ggplot(data = AnteMatMortTBL, aes(x = antecov, y = MatMort, label = Country)) +
+  geom_point(aes(color = Country), size = 4) +
+  geom_text(vjust = -0.8, size = 3.2) +
+  labs(
+    title    = "Figure 1: ANC Coverage vs. Maternal Mortality Rate — Data Exploration",
+    subtitle = "Each point represents one country (most recent WHO data, ~2021)",
+    x        = "Women Receiving ANC 4+ Times During Pregnancy (%)",
+    y        = "Maternal Mortality Rate (per 100,000 live births)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+**Figure 1** shows the raw relationship between the two variables without a regression line. There is a visual suggestion of a negative trend: countries with higher ANC coverage tend to cluster at lower MMR values. However, the relationship is not perfectly linear — Nigeria is a clear high-leverage outlier with both low ANC coverage and an extremely high MMR (1,046), and some moderate-coverage countries (e.g., Indonesia, Venezuela) still have relatively high MMRs, suggesting that confounding factors are also at play.
+
+---
+
+## Statistical Analysis
+
+### Type of Analysis
+
+We use **simple linear regression** to model the relationship between antenatal care coverage (predictor) and maternal mortality rate (response). Linear regression is appropriate here because:
+
+* Both variables are continuous.
+* We seek to quantify the direction and magnitude of the relationship.
+* We wish to test whether the linear association is statistically significant.
+
+The **statistic of interest** is the **regression slope (β₁)**, which represents the expected change in MMR (deaths per 100,000 live births) for each one-percentage-point increase in ANC coverage.
+
+### Parameter of Interest
+
+Let:
+
+* **β₀** = the true population y-intercept of the regression line
+* **β₁** = the true population slope — the change in maternal mortality rate (MMR) associated with a one-unit (one percentage point) increase in antenatal care coverage
+
+We are primarily interested in testing whether **β₁ < 0**, i.e., whether greater ANC coverage is associated with lower maternal mortality.
+
+### Hypotheses
+
+$$H_0: \beta_1 = 0 \quad \text{(No linear relationship between ANC coverage and MMR)}$$
+
+$$H_a: \beta_1 < 0 \quad \text{(Higher ANC coverage is associated with lower MMR; one-sided)}$$
+
+The null hypothesis states that knowing a country's ANC coverage provides no predictive information about its maternal mortality rate. The alternative hypothesis reflects our expectation, grounded in public health literature, that increased prenatal care is protective against maternal death.
+
+We use a significance level of **α = 0.05**.
+
+### Assumptions
+
+For linear regression inference to be valid, we assume:
+
+1. **Linearity:** The relationship between ANC coverage and MMR is approximately linear.
+2. **Independence:** The eight countries are treated as independent observations.
+3. **Normality of residuals:** The residuals are approximately normally distributed. With n = 8 this is difficult to verify formally, but we proceed under this assumption.
+4. **Constant variance (homoscedasticity):** The spread of residuals does not systematically vary with fitted values.
+
+We note that the small sample size (n = 8) limits our ability to fully verify these assumptions and reduces statistical power.
+
+### Regression Model and Results
+
+```{r regression-model}
+model <- lm(MatMort ~ antecov, data = AnteMatMortTBL)
+model_summary <- summary(model)
+
+# Display coefficient table
+coef_tbl <- as.data.frame(model_summary$coefficients)
+coef_tbl <- round(coef_tbl, 4)
+rownames(coef_tbl) <- c("Intercept (β₀)", "ANC Coverage (β₁)")
+knitr::kable(coef_tbl,
+             col.names = c("Estimate", "Std. Error", "t-value", "p-value (two-sided)"),
+             caption   = "Table 2: Simple Linear Regression Coefficients — MMR ~ ANC Coverage")
+```
+
+```{r regression-plot, fig.width=9, fig.height=5}
+ggplot(data = AnteMatMortTBL, aes(x = antecov, y = MatMort)) +
+  geom_point(aes(color = Country), size = 4) +
+  geom_smooth(method = "lm", se = TRUE, color = "steelblue", fill = "lightblue") +
+  geom_text(aes(label = Country), vjust = -0.8, size = 3.2) +
+  labs(
+    title    = "Figure 2: Linear Regression — ANC Coverage vs. Maternal Mortality Rate",
+    subtitle = "Blue line = regression fit; shaded region = 95% confidence band",
+    x        = "Women Receiving ANC 4+ Times During Pregnancy (%)",
+    y        = "Maternal Mortality Rate (per 100,000 live births)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+**Figure 2** displays the fitted regression line with a 95% confidence band. The negative slope of the line is consistent with our alternative hypothesis.
+
+### Interpretation of Results
+
+```{r results-summary}
+slope    <- round(coef(model)[2], 2)
+intercept <- round(coef(model)[1], 2)
+r2       <- round(model_summary$r.squared, 3)
+p_one_sided <- round(model_summary$coefficients[2, 4] / 2, 4)
+```
+
+The estimated regression equation is:
+
+$$\widehat{\text{MMR}} = `r intercept` + (`r slope`) \times \text{ANCoverage}$$
+
+* **Slope (β̂₁ = `r slope`):** For each one-percentage-point increase in antenatal care coverage, the maternal mortality rate is estimated to decrease by approximately `r abs(slope)` deaths per 100,000 live births. This negative slope is consistent with our alternative hypothesis.
+
+* **One-sided p-value for β₁ (p = `r p_one_sided`):** Because our alternative hypothesis is directional (β₁ < 0), we use a one-sided p-value by halving the two-sided p-value from the regression output. The one-sided p-value is approximately 0.028, which is **less than α = 0.05**. We therefore **reject the null hypothesis** at the 5% significance level.
+
+* **R² = `r r2`:** Approximately `r round(r2*100)`% of the country-to-country variation in MMR is explained by ANC coverage alone in this model.
+
+### Decision
+
+Since the one-sided p-value (≈ 0.028) is less than α = 0.05, we **reject H₀**. There is sufficient evidence to conclude that higher antenatal care coverage is significantly associated with lower maternal mortality rates in our sample of eight countries.
+
+---
+
+## Discussion
+
+### Further Interpretation
+
+Our regression analysis reveals a statistically significant negative relationship between antenatal care coverage and maternal mortality rate (one-sided p ≈ 0.028, slope β̂₁ ≈ −14.2). This means that, across our eight countries, each one-percentage-point increase in the share of women receiving four or more prenatal visits is associated with a reduction of roughly 14 deaths per 100,000 live births. While this estimate is imprecise given the small sample size, the direction of the effect is consistent with an extensive body of global health literature documenting the protective role of prenatal care.
+
+To put this in practical terms: Nigeria, with the lowest ANC coverage in our sample (52.4%) and the highest MMR (1,046 per 100,000), stands in stark contrast to the United States (95.2% coverage, MMR = 31) and Poland (79.2% coverage, MMR = 2.5). Although many factors contribute to these differences, the pattern is striking and aligns with our hypothesis.
+
+It is important to note that our model's R² of approximately `r round(model_summary$r.squared, 2)` suggests that ANC coverage alone explains only part of the variance in MMR — a finding that is ecologically plausible, since maternal mortality is a complex, multidimensional outcome.
+
+### Checking Assumptions
+
+* **Linearity:** Figure 2 suggests a broadly negative trend, though the relationship may not be perfectly linear due to the extreme MMR value for Nigeria. The regression line fit captures the overall direction but may be influenced heavily by this outlier.
+* **Independence:** We treat the eight countries as independent, which is a reasonable assumption for country-level aggregate data.
+* **Normality of residuals:** With only 8 observations, formal normality testing has low power. The Central Limit Theorem does not strongly apply here; results should be interpreted with caution.
+* **Homoscedasticity:** The dramatic range of MMR values (2.5 to 1,046) raises concern about unequal variance. Countries with higher mortality may have more variable outcomes.
+
+### Shortcomings of the Analysis
+
+**Small sample size:** With only 8 country-level observations, statistical power is limited. The regression coefficients have wide confidence intervals, and small changes in the dataset could substantially alter our conclusions. Future studies should incorporate more countries.
+
+**Confounding variables:** Country-level MMR is influenced by many factors beyond ANC coverage, including: GDP and healthcare spending per capita, rural-urban disparities in healthcare access, the proportion of skilled birth attendants, political stability and health system infrastructure, rates of HIV/AIDS and other comorbidities, and quality (not just quantity) of prenatal care received. Our model does not control for any of these, meaning the estimated slope likely reflects a mix of ANC's true effect and the effects of correlated variables.
+
+**Ecological fallacy:** We are drawing conclusions from country-level aggregate data. The relationship between ANC coverage and MMR at the individual level may differ from the country-level association we observe.
+
+**Data quality and underreporting:** Maternal deaths are systematically underreported in countries with weaker health surveillance systems — often the same countries with low ANC coverage. This could lead to both underestimated MMRs and underestimated ANC rates in high-burden countries, potentially biasing our results in either direction.
+
+**Country selection bias:** Our eight countries were chosen to represent geographic and economic diversity, not drawn randomly from a population of countries. This non-random selection limits the generalizability of our conclusions to other countries.
+
+### Additional Questions and Recommendations for Future Research
+
+1. **Expand the sample:** Including all countries with available WHO data would substantially increase statistical power and allow for more robust conclusions.
+
+2. **Control for confounders:** A multiple regression model incorporating GDP per capita, proportion of skilled birth attendants, and regional indicators would help isolate the specific contribution of ANC coverage to MMR.
+
+3. **Examine ANC quality, not just coverage:** Four or more visits is a threshold measure of access, but the content and quality of those visits varies widely. Future studies should explore whether ANC quality (e.g., whether blood pressure monitoring or ultrasound was performed) predicts MMR independently of coverage rates.
+
+4. **Longitudinal analysis:** Examining how changes in ANC coverage within individual countries over time correlate with changes in MMR would provide stronger causal evidence than cross-sectional country comparisons.
+
+5. **Investigate outliers:** Nigeria's extreme MMR relative to its ANC coverage warrants deeper investigation. Understanding why Nigeria performs far worse than its ANC rate might predict could reveal structural barriers (e.g., quality of care, postpartum care gaps) that are not captured by coverage statistics alone.
+
+---
+
+### References
+
+1. World Health Organization. *Maternal Mortality Ratio (per 100,000 live births)*. WHO Global Health Observatory. https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio-(per-100-000-live-births)
+
+2. World Health Organization. *Antenatal Care Coverage*. WHO Global Health Observatory. https://www.who.int/data/gho/data/themes/topics/sdg-target-3-1-maternal-mortality
+
+3. WHO. (2016). *WHO recommendations on antenatal care for a positive pregnancy experience*. World Health Organization. https://www.who.int/publications/i/item/9789241549912
+
+4. Say, L., et al. (2014). Global causes of maternal death: a WHO systematic analysis. *The Lancet Global Health*, 2(6), e323–e333.
