@@ -1,3 +1,4 @@
 - add significance calculations and redo conclusion with it
 - add limitations
 - add future studies section
+- check that the implies in hypothesis is formatted correctly
