@@ -79,7 +79,13 @@ The parameters of interest are the true mean maternal mortality rate, and its ra
 * $\beta_1$: The change in mortality for every 1% increase in antenatal care access and coverage.
 
 ### Type of Inference
-We will be doing a regression inference on the slope for our data.
+We use **simple linear regression** to model the relationship between antenatal care coverage (predictor) and maternal mortality rate (response). Linear regression is appropriate here because:
+
+* Both variables are continuous.
+* We seek to quantify the direction and magnitude of the relationship.
+* We wish to test whether the linear association is statistically significant.
+
+The **statistic of interest** is the **regression slope (β₁)**, which represents the expected change in MMR (deaths per 100,000 live births) for each one-percentage-point increase in ANC coverage.
 
 ### Assumptions
 We assume that:
@@ -87,6 +93,8 @@ We assume that:
 $X = \text{Percentage of women who received antenatal care 4 or more times during their pregnancy}$
 $Y = \text{Maternal mortality rate per 100,000 live births}$
 **Independance**: We assume that each country's data is independent of each other.
+**Linearity:** The relationship between ANC coverage and MMR is approximately linear.
+
 
 ### Hypotheses
 The hypotheses for our analysis are:
@@ -116,6 +124,8 @@ coefficients <- model_summary$coefficients
 test_statistic <- coefficients["antecov", "t value"]
 p_value <- coefficients["antecov", "Pr(>|t|)"]
 df <- model2$df.residual
+
+p_value
 ```
 
 **Test Statistic (t): `r test_statistic`**
@@ -123,7 +133,7 @@ df <- model2$df.residual
 **P-Value: `r df`**
 
 ### Interpretation
-We fail to reject the null hypothesis: the p-value is above 0.5 this implies significance for antenatal coverage and maternal mortality rate
+We fail to reject the null hypothesis: the p-value is above 0.05 this implies that there is not a significant negative linear relationship for antenatal coverage and maternal mortality rate.
 
 ### Confidence Interval
 The 95% confidence interval for the difference between antenatal care coverage and the maternal mortality rate is `r round(confint(model2))`. Since the confidence interval does include 0, we cannot be sure that there is indeed a negative linear relationship, but there is certainly a week correlation.
@@ -143,3 +153,11 @@ Some possible limitations include confounding factors that are not represented i
 Therefore, data is often adjusted in order to take into account these data quality issues. Increasing the depth and volume of studies regarding the maternal mortality rate would be beneficial for future research on the topic and could help to save lives. 
 
 ### References
+
+1. World Health Organization. *Maternal Mortality Ratio (per 100,000 live births)*. WHO Global Health Observatory. https://www.who.int/data/gho/data/indicators/indicator-details/GHO/maternal-mortality-ratio-(per-100-000-live-births)
+
+2. World Health Organization. *Antenatal Care Coverage*. WHO Global Health Observatory. https://www.who.int/data/gho/data/themes/topics/sdg-target-3-1-maternal-mortality
+
+3. WHO. (2016). *WHO recommendations on antenatal care for a positive pregnancy experience*. World Health Organization. https://www.who.int/publications/i/item/9789241549912
+
+4. Say, L., et al. (2014). Global causes of maternal death: a WHO systematic analysis. *The Lancet Global Health*, 2(6), e323–e333.
