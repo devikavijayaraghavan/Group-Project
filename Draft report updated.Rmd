@@ -84,8 +84,8 @@ We will be doing a regression inference on the slope for our data.
 ### Assumptions
 We assume that:
 
-\[X = \text{Percentage of women who recieved antenatal care 4 or more times during their pregnancy}
-\[Y = \text{Maternal mortality rate per 100,000 live births}
+$X = \text{Percentage of women who recieved antenatal care 4 or more times during their pregnancy$
+$Y = \text{Maternal mortality rate per 100,000 live births}$
 **Independance**: We assume that each country's data is independent of each other.
 
 ### Hypotheses
@@ -94,10 +94,17 @@ The hypotheses for our analysis are:
 **Null Hypothesis (\(H_0\))**: There is no linear relationship between the percentage of women who recieved antenatal care 4 or more times during their pregnancy and the maternal mortality rate
 **Alternative Hypothesis (\(H_{alpha}\))**: There is a negative linear relationship between the percentage of women recieving antenatal care 4 or more times and the maternal mortality rate
 
-\[ H_0: \beta_x = \beta_y \implies \beta_x-\beta_y = 0 \\ H_{alpha}: \beta_x > \beta_y \implies \beta_x-\beta_y > 0 \]
-
+$$H_0: \beta_1 = 0$$
+$$H_\alpha: \beta_1 < 0$$
 
 ### Test Statistic and Null Distribution
+The formula for the test statistic is:
+
+$$t = \frac{\hat{\beta}}{SE(\hat{\beta})}$$
+where:
+* $\hat{\beta}_0$ is the estimated slope representing the change in the maternal mortality for every 1% increase from antenatal care
+* $SE(\hat{\beta}_1)$ is the standard error for the estimated slope
+
 
 ### Results
 
